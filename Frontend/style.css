@@ -1,0 +1,163 @@
+/* Background with dark overlay */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("https://publishdrive.com/media/posts/794/ai-voice.png")
+    center/cover no-repeat fixed;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* darkness overlay */
+  z-index: 0;
+}
+
+/* Chat Container (Full Screen Dark Card) */
+.chat-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;       /* Full width */
+  height: 100vh;     /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 15, 25, 0.75);
+  backdrop-filter: blur(15px);
+  border-radius: 0;  /* Remove rounded corners */
+  box-shadow: none;  /* Remove shadow */
+  padding: 0;
+  overflow: hidden;
+}
+
+
+/* Header */
+.chat-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.header-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+.header-sub {
+  margin-top: 5px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Chat Area */
+.chat-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Message bubbles */
+.bot-message,
+.user-message {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.4;
+  max-width: 75%;
+  word-wrap: break-word;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #7b5cff, #4a32d4);
+  color: white;
+}
+
+/* Audio inside bot */
+.bot-message audio {
+  margin-top: 8px;
+  width: 220px;
+  height: 36px;
+}
+
+/* Footer */
+.chat-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#textInput {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 14px;
+}
+
+/* Base button style */
+.chat-footer button {
+  background-color: #7b5cff; /* Button color */
+  color: white; /* Text color */
+  padding: 8px 14px; /* Button padding */
+  border: none; /* Remove border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer on hover */
+  font-size: 14px; /* Text size */
+  transition: all 0.2s ease; /* Smooth hover animation */
+}
+
+/* Disabled button */
+.chat-footer button:disabled {
+  opacity: 0.6; /* Dimmed */
+  cursor: not-allowed; /* Show not-allowed cursor */
+}
+
+/* Hover effect (only when not disabled) */
+.chat-footer button:hover:not(:disabled) {
+  background-color: #6932f0; /* Change background on hover */
+  color: #fff; /* Text color on hover */
+  box-shadow: 0 4px 15px rgba(105, 50, 240, 0.5); /* Optional glow/shadow */
+  transform: translateY(-2px); /* Optional slight lift */
+}
+
+/* Scrollbar */
+.chat-area::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .chat-container {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .bot-message audio {
+    width: 180px;
+  }
+}

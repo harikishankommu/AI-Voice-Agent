@@ -1,0 +1,382 @@
+//html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Bots</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bot-container">
+      <!-- AI Voice Chat Card -->
+      <div class="card">
+        <h1 class="card-heading">AI Voice Chat</h1>
+        <div class="chat-area" id="chatAreaAI">
+          <div class="bot-message">
+            Hi! I'm your voice assistant. Type a message below .
+          </div>
+        </div>
+        <div class="input-area">
+          <input
+            type="text"
+            id="textInput"
+            placeholder="Type your message..."
+          />
+          <button onclick="generateAudio()">Send</button>
+        </div>
+      </div>
+
+      <!-- Echo Bot Card -->
+
+      <div class="card">
+        <h1 class="card-heading">Echo Bot</h1>
+        <div class="chat-area" id="chatAreaEcho">
+          <div class="bot-message">
+            Welcome to Echo Bot! I'm here to generate audio messages. Please
+            click on the "Start Recording" button to begin.
+          </div>
+        </div>
+        <div class="echo-controls">
+          <button id="startBtn" type="button">Start Recording</button>
+          <button id="stopBtn" type="button">Stop Recording</button>
+          <button id="refreshBtn" type="button">Refresh</button>
+         
+          <p id="upload-status" class="upload-status"></p>
+          <p id="transcriptionResult" class="transcriptionResult"></p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+//css
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('https://publishdrive.com/media/posts/794/ai-voice.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* Container holding both cards */
+.bot-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1200px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Each card */
+.card {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #fff;
+  height: 520px;
+}
+
+/* Card Heading */
+.card-heading {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px #000;
+}
+
+/* Chat Area Styling */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.bot-message, .user-message {
+  background-color: #ffffffdd;
+  padding: 8px 12px;
+  border-radius: 10px;
+  color: #000;
+  font-size: 14px;
+  max-width: 95%;
+  word-wrap: break-word;
+}
+
+.bot-message {
+  align-self: flex-start;
+  background-color: #dcd6ff;
+}
+
+.bot-message audio {
+  width: 250px;
+  height: 36px;
+  border-radius: 8px;
+  outline: none;
+}
+
+
+
+.user-message {
+  align-self: flex-end;
+  background-color: #b8e2ff;
+}
+
+/* Audio Styling */
+audio {
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Input and Send Button */
+.input-area {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  background-color: #222244;
+  border: 1px solid #3c3c5a;
+  border-radius: 10px;
+  color: #e0e0ff;
+  outline: none;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background-color: #8b6aec;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #0b0b0f;
+  transform: translateY(-1px);
+}
+
+/* Echo Bot Buttons Row */
+.echo-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Responsive: stack cards on mobile */
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+}
+
+//js
+
+// ----------- Text to Speech (TTS) Chat Area -----------
+async function generateAudio() {
+  const inputText = document.getElementById("textInput").value.trim();
+  const chatArea = document.getElementById("chatAreaAI");
+
+  if (!inputText) {
+    alert("Please enter some text!");
+    return;
+  }
+
+  const userMsg = document.createElement("div");
+  userMsg.className = "user-message";
+  userMsg.innerText = inputText;
+  chatArea.appendChild(userMsg);
+  chatArea.scrollTop = chatArea.scrollHeight;
+
+  document.getElementById("textInput").value = "";
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/generate_audio_sdk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: inputText }),
+    });
+
+    if (!response.ok) throw new Error("Server error while generating audio.");
+
+    const data = await response.json();
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-message";
+
+    const audioElem = document.createElement("audio");
+    audioElem.src = data.audio_url;
+    audioElem.controls = true;
+    audioElem.autoplay = true;
+
+    botMsg.innerText = "Here's the audio: ";
+    botMsg.appendChild(audioElem);
+    chatArea.appendChild(botMsg);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
+
+document.getElementById("textInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") generateAudio();
+});
+
+// ----------- Echo Bot (Microphone Recorder) -----------
+let mediaRecorder;
+let audioChunks = [];
+
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const refreshBtn = document.getElementById("refreshBtn");
+const echoChatArea = document.getElementById("chatAreaEcho");
+
+startBtn.addEventListener("click", async () => {
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+
+  const recordingMsg = document.createElement("div");
+  recordingMsg.className = "bot-message";
+  recordingMsg.id = "recordingStatus";
+  recordingMsg.innerText = "🎙️ Recording in progress...";
+  echoChatArea.appendChild(recordingMsg);
+  echoChatArea.scrollTop = echoChatArea.scrollHeight;
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        audioChunks.push(event.data);
+      }
+    };
+
+    mediaRecorder.onstop = async () => {
+      const statusMsg = document.createElement("div");
+      statusMsg.className = "user-message";
+      statusMsg.innerText = "⌛ Echoing in Murf voice...";
+      echoChatArea.appendChild(statusMsg);
+
+      // ✅ Create the audio blob from recorded chunks
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+
+      const formData = new FormData();
+      formData.append("file", audioBlob, "recording.webm");
+
+      try {
+        const res = await fetch("/tts/echo", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) throw new Error("Echo failed");
+
+        const data = await res.json();
+        const botMsg = document.createElement("div");
+        botMsg.className = "bot-message";
+        botMsg.innerText = "Here is your recorded audio:";
+
+        const audioElem = document.createElement("audio");
+        audioElem.src = data.audio_url;
+        audioElem.controls = true;
+        audioElem.autoplay = true;
+        audioElem.style.width = "350px"; // ✅ optimal width
+        audioElem.style.height = "36px"; // ✅ balanced height
+
+        botMsg.appendChild(audioElem);
+        echoChatArea.appendChild(botMsg);
+        echoChatArea.scrollTop = echoChatArea.scrollHeight;
+      } catch (err) {
+        statusMsg.innerText = `❌ Echo failed: ${err.message}`;
+        console.error(err);
+      }
+
+      uploadAndTranscribeAudio(audioBlob); // ✅ Now this also gets a valid blob
+    };
+
+    mediaRecorder.start();
+  } catch (err) {
+    alert("Microphone error: " + err.message);
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  }
+});
+
+stopBtn.addEventListener("click", () => {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  }
+});
+
+async function uploadAndTranscribeAudio(blob) {
+  const formData = new FormData();
+  formData.append("file", blob, "recording.webm");
+
+  try {
+    const response = await fetch("/transcribe/file", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error("Transcription failed");
+
+    const data = await response.json();
+    const text = data.text;
+
+    // Create the chat message bubble with transcription
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-message";
+    botMsg.innerText = text;
+
+    echoChatArea.appendChild(botMsg); // Append inside the Echo Bot chat area
+    echoChatArea.scrollTop = echoChatArea.scrollHeight;
+  } catch (error) {
+    console.error(error);
+    const errMsg = document.createElement("div");
+    errMsg.className = "bot-message error-message";
+    errMsg.innerText = "Transcription failed.";
+    echoChatArea.appendChild(errMsg);
+    echoChatArea.scrollTop = echoChatArea.scrollHeight;
+  }
+}
+
+refreshBtn.addEventListener("click", () => {
+  window.location.reload();
+});
