@@ -1,132 +1,129 @@
 30 Days of Voice Agents Challenge
+Welcome to the repository for my 30 Days of Voice Agents Challenge! This project documents the journey of building a sophisticated, voice-activated conversational AI from the ground up. Over the course of this challenge, a simple web page evolves into a fully interactive voice agent capable of holding context-aware conversations, now deployed and accessible online.
 
-Welcome to the repository for my 30 Days of Voice Agents Challenge.
-This project documents the journey of building a voice-activated conversational AI from scratch. Over 30 days, a simple webpage is transformed into a fully interactive voice agent that can hold context-aware conversations and is deployed online.
+🤖 About The Project
+This project is a hands-on guide to building a voice-based conversational AI using modern web technologies and powerful AI APIs. You can engage in a continuous, voice-to-voice conversation with an AI powered by Google's Gemini LLM. The agent remembers the context of your conversation, allowing for natural follow-up questions and a more human-like interaction.
 
-About The Project
-This project is a step-by-step guide to building a voice-based conversational AI using web technologies and AI APIs. You can have a continuous voice-to-voice conversation with an AI powered by Google’s Gemini model. The agent remembers the context of your dialogue, making conversations feel natural.
-
-The repository is organized by day. Each folder shows progress toward the final version, from basic server setup to a complete conversational system with memory, voice interaction, and deployment.
+The repository is structured by day, with each folder representing a significant step in the development process, from setting up the server to implementing a full conversational loop with memory and deploying it to the cloud.
 
 Key Features
+Voice-to-Voice Interaction: Speak to the agent and receive a spoken response, creating a seamless conversational experience.
+Contextual Conversations: The agent maintains a chat history for each session, enabling it to understand the flow of dialogue and respond to follow-up questions intelligently.
+End-to-End AI Pipeline: It seamlessly integrates multiple AI services for a complete Speech-to-Text → Large Language Model → Text-to-Speech pipeline.
+Modern & Intuitive UI: A clean, user-friendly interface with a single-button control and visual feedback for different states (e.g., ready, recording, thinking).
+Robust Error Handling: Includes a fallback audio response for graceful failure when an API call is unsuccessful, ensuring a smooth user experience.
+Live Deployment: The voice agent is deployed to the cloud and is publicly accessible.
+🛠️ Tech Stack
+The application is built using a combination of Python for the backend, vanilla JavaScript for the frontend, and a suite of powerful AI APIs for the core functionalities.
 
-Voice-to-voice interaction: Speak to the agent and hear spoken responses.
+Backend:
+FastAPI: For building the high-performance, asynchronous API server.
+Uvicorn: As the ASGI server to run the FastAPI application.
+Python-Dotenv: To manage environment variables securely.
+WebSockets: For real-time, bidirectional communication between the client and server.
+Frontend:
+HTML, CSS, JavaScript: For the structure, styling, and client-side logic.
+Bootstrap: For creating a responsive and modern user interface.
+MediaRecorder API & WebSocket API: To capture and stream audio directly from the user's microphone in the browser.
+AI & Voice APIs:
+Murf AI: For generating high-quality, natural-sounding Text-to-Speech (TTS), including streaming capabilities.
+AssemblyAI: For providing fast and accurate real-time Speech-to-Text (STT) transcription with turn detection.
+Google Gemini: As the Large Language Model (LLM) for generating intelligent and coherent responses, with streaming and function calling.
+SerpAPI: For real-time Google Search results, giving the agent access to current information.
+Deployment:
+Render.com: For hosting the application and making it publicly available.
+⚙️ Architecture
+The application follows a client-server architecture. The frontend, running in the user's browser, is responsible for capturing audio and managing the user interface. The FastAPI backend acts as the orchestrator, managing the complex interactions between the various AI services.
 
-Contextual conversations: Maintains chat history to understand follow-up questions.
+Here is the flow for a single turn in a conversation:
 
-End-to-end AI pipeline: Speech-to-Text → LLM → Text-to-Speech.
-
-Simple UI: Clean interface with single-button control and status feedback.
-
-Error handling: Fallback responses in case of API errors.
-
-Cloud deployment: Hosted and accessible online.
-
-Tech Stack
-
-Backend
-
-FastAPI: API framework
-
-Uvicorn: ASGI server
-
-Python-Dotenv: Manage environment variables
-
-WebSockets: Real-time communication
-
-Frontend
-
-HTML, CSS, JavaScript: UI and logic
-
-Bootstrap: Responsive styling
-
-MediaRecorder API, WebSocket API: Capture and stream audio
-
-AI and Voice APIs
-
-Murf AI: Text-to-speech
-
-AssemblyAI: Speech-to-text
-
-Google Gemini: Conversational LLM
-
-SerpAPI: Real-time Google search results
-
-Deployment
-
-Render.com for hosting
-
-Architecture
-The app follows a client-server structure. The browser captures audio and manages the interface. The FastAPI backend coordinates communication between multiple AI services.
-
-Conversation flow:
-
-The client records voice and sends audio to the server.
-
-The server sends audio to AssemblyAI for transcription.
-
-The transcript and chat history are sent to Gemini.
-
-Gemini generates a response.
-
-The response is sent to Murf AI for text-to-speech.
-
-The server returns the audio to the client.
-
-The browser plays the audio and waits for the next input.
-
-Getting Started
-
+The Client captures the user's voice using the MediaRecorder API and sends the audio data to the backend.
+The FastAPI Server receives the audio file.
+It first sends the audio to AssemblyAI to be transcribed into text (STT).
+The server retrieves the chat history for the current session and appends the new transcript. This entire context is then sent to the Google Gemini LLM.
+Gemini processes the conversation and generates a text response, which is sent back to the server.
+The server adds the LLM's response to the chat history and forwards the text to Murf AI for speech synthesis (TTS).
+The server receives the final audio URL from Murf AI and sends it back to the client.
+The Client automatically plays the received audio, and the UI updates to indicate it's ready for the user's next turn.
+🚀 Getting Started
 Try the Live Agent
-The agent is live at:
+Our voice agent is now live! You can access and interact with it here:
+
 https://marvis-voice-agent-l7da.onrender.com/
 
-Open the link, enter your API keys, allow microphone access, and start chatting.
+Simply visit the link, click the settings icon to enter your API keys, grant microphone permissions, and start chatting!
 
-Run Locally
+Running the App Locally
+To get a local copy up and running, follow these simple steps.
 
 Prerequisites
-
-Python 3.8 or later
-
-API keys for Murf AI, AssemblyAI, Google Gemini, SerpAPI
-
-Steps
-
-Clone the repository:
+Python 3.8+
+API keys for:
+Murf AI
+AssemblyAI
+Google Gemini
+SerpAPI
+Installation
+Clone the repository
 git clone https://github.com/siddbhatt18/30-days-of-voice-agents.git
-
-Go to the latest folder (for example, day-29):
+Navigate to the latest project directory (e.g., day-29).
 cd 30-days-of-voice-agents/day-29/
-
-Install dependencies:
+Install the required dependencies from the requirements.txt file.
 pip install -r requirements.txt
-
-Create a .env file with your keys:
-MURF_API_KEY="your_murf_api_key"
-ASSEMBLYAI_API_KEY="your_assemblyai_api_key"
-GEMINI_API_KEY="your_gemini_api_key"
-SERP_API_KEY="your_serp_api_key"
-
-Run the app:
+Create a .env file in the chosen day's directory. Copy the contents of .env.example (if available) or create it from scratch.
+MURF_API_KEY="your_murf_api_key_here"
+ASSEMBLYAI_API_KEY="your_assemblyai_api_key_here"
+GEMINI_API_KEY="your_gemini_api_key_here"
+SERP_API_KEY="your_serp_api_key_here"
+Run the FastAPI server with hot-reloading.
 uvicorn main:app --reload
-
-Open http://localhost:8000
- in your browser.
-
-Project Structure
+Open your browser and navigate to http://localhost:8000. Grant microphone permissions when prompted and start conversing!
+📂 Project Structure
+The project structure is optimized for deployment.
 
 AI Voice Agent/
-├── main.py - Server and WebSocket handling
+├── main.py      # Handles WebSocket connections and API key logic
 ├── services/
-│ ├── llm.py - Gemini integration
-│ ├── stt.py - Speech-to-text
-│ └── tts.py - Text-to-speech
+│   ├── llm.py   # Handles interactions with the Gemini LLM
+│   ├── stt.py   # Manages real-time speech-to-text
+│   └── tts.py   # Manages text-to-speech conversion
 ├── schemas.py
 ├── templates/
-│ └── index.html - Frontend UI
+│   └── index.html # Main UI for the voice agent
 ├── static/
-│ ├── script.js - Frontend logic
-│ └── style.css - Styles
-├── requirements.txt - Dependencies
-└── .env - API keys (local use only)
+│   ├── script.js  # Frontend logic for recording and settings
+│   └── style.css  # UI styles
+├── requirements.txt # Lists all project dependencies for deployment
+└── .env           # Stores API keys for local development
+🗓️ Project Journey: Day 1 to 29
+Here is a summary of the progress made during the challenge.
+
+Day 01: Laid the foundation with a basic FastAPI server and a simple Bootstrap UI.
+Day 02: Integrated the Murf AI API to create the first endpoint for Text-to-Speech (TTS).
+Day 03: Built the frontend interface to interact with the TTS endpoint, allowing users to type text and hear it spoken.
+Day 04: Developed a client-side Echo Bot using the MediaRecorder API to record and play back user audio.
+Day 05: Enhanced the echo bot by implementing server-side audio upload, moving from client-only to a client-server model.
+Day 06: Integrated the AssemblyAI API for Speech-to-Text (STT), allowing the server to transcribe user audio.
+Day 07: Created a voice transformation bot by chaining the STT and TTS services. The app would listen, transcribe, and speak the user's words back in a different voice.
+Day 08: Introduced intelligence by integrating the Google Gemini LLM, creating an endpoint that could generate text-based responses to queries.
+Day 09: Achieved a full voice-to-voice conversational loop. The app could now listen to a spoken question and provide a spoken answer generated by the LLM.
+Day 10: Implemented chat history and session management, giving the agent a "memory" to hold context-aware conversations.
+Day 11: Made the application more robust by adding server-side and client-side error handling, including a friendly fallback audio message for API failures.
+Day 12: Performed a major UI revamp, simplifying the interface to a single, animated record button and a cleaner, more modern aesthetic.
+Day 13: Focused on documentation, creating a comprehensive README.md file to explain the project's architecture, features, and setup.
+Day 14: Refactored the project structure by organizing the code into services, schemas, and config files for better modularity.
+Day 15: Gave the agent a persona to make the interaction more engaging and consistent.
+Day 16: Implemented streaming for AssemblyAI's STT service for real-time transcription.
+Day 17: Integrated streaming for the Google Gemini LLM to get faster responses.
+Day 18: Added streaming for Murf AI's TTS service to start hearing the agent's voice sooner.
+Day 19: Switched to WebSockets for persistent, real-time, and bidirectional communication.
+Day 20: Implemented turn detection in the STT service to know when the user has finished speaking.
+Day 21: Integrated SerpAPI for real-time Google Search results.
+Day 22: Implemented function calling with Google Gemini to let the agent decide when to use the search tool.
+Day 23: Refined the UI to show real-time transcription and the agent's thoughts.
+Day 24: Added a loading animation and other visual cues to the UI.
+Day 25: Added a welcome message that plays on page load.
+Day 26: Gave the voice agent a name: "Marvis".
+Day 27: Revamped the UI and implemented a settings panel for API key configuration directly in the browser.
+Day 28: Successfully deployed the agent to a public cloud server, making it accessible to all.
+Day 29: Updated the main README.md to include all the latest features, architectural changes, and a complete project journey, ensuring the documentation is comprehensive and up-to-date with the current state of the voice agent.
